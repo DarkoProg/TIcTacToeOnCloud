@@ -1,0 +1,30 @@
+.tic_tac_toe {
+    background-color: cyan;
+    padding-left: 20%;
+    padding-right: 20%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.column {
+    background-color: red;
+    display: black;
+    
+}
+
+.field {
+    padding: 100px;
+    margin: 5px;
+    width: 300px;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+    background-color: white;
+    border: none;
+}
+
+.field img {
+    max-height: 300px;
+    max-width: 300px;
+}
