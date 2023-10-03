@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles/TicTacToe.css';
 import O from './assets/O.png'
 import X from './assets/X.png'
@@ -17,14 +17,15 @@ export default function Board(board) {
     const sign = [X, O];
     const [player, setPlayer] = useState(0);
     const [test, setTest] = useState(Array(9).fill(null));
+    const [text, setText] = useState("current player:");
+    
+
 
     const handleClick = (fieldNum) => {
         var changeField = test.slice();
-        console.log(checkWin())
         if (test[fieldNum] || checkWin()) {
             return;
         }
-
         changeField[fieldNum] = sign[player];
         setTest(changeField);
 
@@ -52,8 +53,27 @@ export default function Board(board) {
         return null;
     }
 
+    const reset = () => {
+        setTest(Array(9).fill(null))
+        setPlayer(0);
+    }
+
+    useEffect(() => {
+        if(checkWin()) {
+            setText("winner: ");
+            setPlayer((player + 1) % 2);
+        }
+        else {
+            setText("current player: ");
+        }
+    },[test])
+
     return (
+        
         <div className="board">
+            <div className="playerBox">
+            <p>{text}</p> <img class="player" src={sign[player]}/>  <button onClick={reset}>reset</button><br/><br/>
+            </div>
             <div className="column">
                 <Field value={test[0]} onFieldClick={() => handleClick(0)} />
                 <Field value={test[1]} onFieldClick={() => handleClick(1)} />
