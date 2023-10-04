@@ -72,7 +72,7 @@ export default function Board(board) {
         
         <div className="board">
             <div className="playerBox">
-            <p>{text}</p> <img class="player" src={sign[player]}/>  <button onClick={reset}>reset</button><br/><br/>
+            <p>{text}</p> <img className="player" src={sign[player]}/>  <button onClick={reset}>reset</button><br/><br/>
             </div>
             <div className="column">
                 <Field value={test[0]} onFieldClick={() => handleClick(0)} />
