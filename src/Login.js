@@ -1,31 +1,53 @@
 import { db, auth } from './Firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import {signInWithEmailAndPassword ,onAuthStateChanged } from 'firebase/auth';
-import { useState } from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
+import { StreamChat } from "stream-chat"
+import { Stream } from './Stream.js'
 
-const Login = () => {
+const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    let unsubscribe;
+    const [user, loading, error] = useAuthState(auth);
+    const client = StreamChat.getInstance(Stream.api, Stream.secret);
+    const history = useHistory();
+    const cookies = props.cookies;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if(!client.secret) {
+            client.secret = Stream.secret;
+        }
+
         signInWithEmailAndPassword(auth, email, password)
         .then((credentials) => {
             console.log('user logged in: ', credentials.user);
+            const token = client.createToken(email);
+            console.log("token", token);
+            cookies.set(token);
 
-            unsubscribeUser();
         })
         .catch((err) => {
             console.log("error when logging in: ", err);
         })
-
     }
 
-    const unsubscribeUser = onAuthStateChanged(auth, (user) => {
-        console.log("status change: ", user);
-    })
+    useEffect(() => {
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+              console.log("signed in", user)
+            } else {
+              console.log("not signed in")
+            }
+        })
+        if(user) {
+            history.push("/join");
+        }
+    }, [user])
+
 
     return ( 
         <form onSubmit={handleSubmit} className="Login">

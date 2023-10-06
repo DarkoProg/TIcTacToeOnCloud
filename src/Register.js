@@ -2,10 +2,12 @@ import { db, auth } from './Firebase.js';
 import { collection, addDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import Cookies from 'universal-cookie';
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const cookies = new Cookies()
 
     const handleSubmit = async (e) => {
         e.preventDefault();

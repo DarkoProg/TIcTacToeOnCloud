@@ -1,5 +1,6 @@
 import { auth } from './Firebase'
 import { signOut, onAuthStateChanged } from 'firebase/auth'
+import Cookies from 'universal-cookie';
 
 const Navbar = () => {
 
@@ -11,6 +12,7 @@ const Navbar = () => {
                 console.log("status change: ", user);
             })
             unsubscribeUser();
+            console.log("signed out")
         })
         .catch((err) => {
             console.log((err) => {
@@ -20,7 +22,6 @@ const Navbar = () => {
     }
     return (
         <nav className="navbar">
-            <h1>The Dojo Blog</h1>
             <div className="links">
                 <a href="/">Home</a>
                 <a href="/register" style={{
