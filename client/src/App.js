@@ -15,7 +15,7 @@ import JoinGame from './JoinGame';
 function App() {
   const cookies = new Cookies();
   const [user, loading, error] = useAuthState(auth);
-  const [isAuth, setIsAuth] = useState(false);
+  //const [isAuth, setIsAuth] = useState(false);
 
   return (
     <Router>
@@ -37,12 +37,13 @@ function App() {
               <Login cookies={cookies}/>
             </Route>
             <Route exact path="/join">
-              {isAuth ?
+{/*               {isAuth ?
                 (<div className="game">
                     <JoinGame />
                 </div>) : (
                 <h1>Waiting</h1>
-                )}
+                )} */}
+                <JoinGame />
             </Route>
           </Switch>
         </div>

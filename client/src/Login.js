@@ -3,31 +3,19 @@ import {signInWithEmailAndPassword ,onAuthStateChanged } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
-import { StreamChat } from "stream-chat"
-import { Stream } from './Stream.js'
 
 const Login = (props) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [user, loading, error] = useAuthState(auth);
-    const client = StreamChat.getInstance(Stream.api, Stream.secret);
     const history = useHistory();
-    const cookies = props.cookies;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if(!client.secret) {
-            client.secret = Stream.secret;
-        }
-
         signInWithEmailAndPassword(auth, email, password)
         .then((credentials) => {
             console.log('user logged in: ', credentials.user);
-            const token = client.createToken(email);
-            console.log("token", token);
-            cookies.set(token);
-
         })
         .catch((err) => {
             console.log("error when logging in: ", err);

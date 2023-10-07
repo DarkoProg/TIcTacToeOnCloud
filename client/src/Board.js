@@ -3,10 +3,7 @@ import { useState, useEffect } from 'react';
 import './styles/TicTacToe.css';
 import O from './assets/O.png'
 import X from './assets/X.png'
-import socketIOClient from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:5000";
-let socket = socket = socketIOClient(ENDPOINT);
-
+import { socket } from "./Socket";
 
 function Field({ value, onFieldClick }) {
     return (
@@ -17,37 +14,37 @@ function Field({ value, onFieldClick }) {
     );
 }
 
-export default function Board() {
+export default function Board(props) {
     const sign = [X, O];
     const [player, setPlayer] = useState(0);
     const [board, setBoard] = useState(Array(9).fill(null));
     const [text, setText] = useState("current player:");
+    const [myTurn, setMyTurn] = useState(false);
+    //const socket = props.socket;
     
-
-
     const handleClick = (fieldNum) => {
         var changeField = board.slice();
-        if (board[fieldNum] || checkWin()) {
+        if ((board[fieldNum] || checkWin()) && myTurn) {
             return;
         }
         changeField[fieldNum] = sign[player];
         setBoard(changeField);
 
-        setPlayer((player + 1) % 2);
+        //setPlayer((player + 1) % 2);
+        setMyTurn(false);
         socket.emit("move", {move: fieldNum, player: 0})
     }
 
     socket.on('changePlayer', (data) => {
         setPlayer(data);
+        setMyTurn(true);
     })
 
     socket.on('rivalMove', (data) => {
         var changeField = board.slice();
-        if (board[data.move] || checkWin()) {
-            return;
-        }
         changeField[data.move] = sign[data.player];
         setBoard(changeField);
+        setMyTurn(true);
     })
 
     function checkWin() {
