@@ -52,13 +52,16 @@ const { Server } = require('socket.io');
 
 
 let players = [];
+let board = Array(9).fill(null);
+let current;
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000"
-}});
+    cors: {
+        origin: "http://localhost:3000"
+    }
+});
 
 app.get('/cors', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
@@ -66,27 +69,30 @@ app.get('/cors', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+    console.log('a user connected');
 
-  players.push({socket: socket, player: players.length});
+    //if (socket !== players[players.length - 1].socket) {
+        players.push({ socket: socket, player: players.length });
 
-    if( players.length == 2) {
-        gameStart = true;
-        var changePlayer = Math.random() * 2;
-        socket.to(players[1].socket.id).emit('changePlayer', 1)
-        io.sockets.emit('start', true);
-        //socket.emit('start', true);
-    }
-    
-    socket.on('move', (data) => {
-        for(let i = 0; i < players.length; i++) {
-            if(players[i].player != data.player) {
-                socket.to(players[i].socket.id).emit('rivalMove', data);
-            }
+        if (players.length === 2) {
+            console.log(players);
+            gameStart = true;
+            current = Math.floor(Math.random() * 2);
+            io.sockets.emit('start', true);
+            players[current].socket.emit('changePlayer', 1);
+            //socket.emit('start', true);
         }
-    })
+
+        socket.on('move', (data) => {
+            for (let i = 0; i < players.length; i++) {
+                if (players[i].player != data.player) {
+                    socket.to(players[i].socket.id).emit('rivalMove', data);
+                }
+            }
+        })
+   // }
 });
 
 server.listen(5000, () => {
-  console.log('server running at http://localhost:5000');
+    console.log('server running at http://localhost:5000');
 });

@@ -19,7 +19,7 @@ const JoinGame = () => {
         socket.on('start', (data) => {
             setGame(data);
         })
-    })
+    }, [])
 
     return ( 
         <div className="JoinGame">
@@ -27,7 +27,7 @@ const JoinGame = () => {
                 !game ? (
                 <button className="join" onClick={createChannel}>Connect</button>
                 ) : (
-                 <Board socket={socket} />
+                 <Board/>
                  )
             }     
         </div>    

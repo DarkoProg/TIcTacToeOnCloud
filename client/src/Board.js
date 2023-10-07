@@ -24,7 +24,7 @@ export default function Board(props) {
     
     const handleClick = (fieldNum) => {
         var changeField = board.slice();
-        if ((board[fieldNum] || checkWin()) && myTurn) {
+        if ((board[fieldNum] || checkWin()) && !myTurn) {
             return;
         }
         changeField[fieldNum] = sign[player];
@@ -35,17 +35,22 @@ export default function Board(props) {
         socket.emit("move", {move: fieldNum, player: 0})
     }
 
-    socket.on('changePlayer', (data) => {
-        setPlayer(data);
-        setMyTurn(true);
-    })
+    useEffect(() => {
+        socket.on('changePlayer', (data) => {
+            setPlayer(data);
+            setMyTurn(true);
+        })
+    
+        socket.on('rivalMove', (data) => {
+            console.log(myTurn);
+            var changeField = board.slice();
+            changeField[data.move] = sign[data.player];
+            setBoard(changeField);
+            setMyTurn(true);
+            console.log(myTurn);
+        })
+    }, [])
 
-    socket.on('rivalMove', (data) => {
-        var changeField = board.slice();
-        changeField[data.move] = sign[data.player];
-        setBoard(changeField);
-        setMyTurn(true);
-    })
 
     function checkWin() {
         const winCondition = [
@@ -86,6 +91,7 @@ export default function Board(props) {
     return (
         
         <div className="board">
+            <p>its { myTurn ? " your " : "not your" } turn</p>
             <div className="playerBox">
             <p>{text}</p> <img className="player" src={sign[player]}/>  <button onClick={reset}>reset</button><br/><br/>
             </div>
