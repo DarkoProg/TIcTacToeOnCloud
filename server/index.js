@@ -57,9 +57,11 @@ let current;
 
 const app = express();
 const server = createServer(app);
+const PORT=process.env.PORT || 8080;
+
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000"
+        origin: "http://localhost:8080"
     }
 });
 
@@ -108,6 +110,6 @@ io.on('connection', (socket) => {
     })
 });
 
-server.listen(5000, () => {
-    console.log('server running at http://localhost:5000');
+server.listen(PORT, () => {
+    console.log('server running at http://localhost:', PORT);
 });
