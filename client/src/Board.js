@@ -14,13 +14,12 @@ function Field({ value, onFieldClick }) {
     );
 }
 
-export default function Board(props) {
+export default function Board() {
     const sign = [X, O];
     const [player, setPlayer] = useState(0);
     const [board, setBoard] = useState(Array(9).fill(null));
     const [text, setText] = useState("current player:");
     const [myTurn, setMyTurn] = useState(false);
-    //const socket = props.socket;
     
     const handleClick = (fieldNum) => {
         var changeField = board.slice();
@@ -29,25 +28,24 @@ export default function Board(props) {
         }
         changeField[fieldNum] = sign[player];
         setBoard(changeField);
-
-        //setPlayer((player + 1) % 2);
+        socket.emit("move", {move: fieldNum, player: player});
         setMyTurn(false);
-        socket.emit("move", {move: fieldNum, player: 0})
+        
     }
 
     useEffect(() => {
         socket.on('changePlayer', (data) => {
             setPlayer(data);
+            console.log("after change: ", player)
             setMyTurn(true);
         })
     
         socket.on('rivalMove', (data) => {
-            console.log(myTurn);
             var changeField = board.slice();
             changeField[data.move] = sign[data.player];
             setBoard(changeField);
             setMyTurn(true);
-            console.log(myTurn);
+            console.log(board);
         })
     }, [])
 

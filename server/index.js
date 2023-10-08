@@ -75,18 +75,19 @@ io.on('connection', (socket) => {
         players.push({ socket: socket, player: players.length });
 
         if (players.length === 2) {
-            console.log(players);
+            console.log(players)
             gameStart = true;
             current = Math.floor(Math.random() * 2);
             io.sockets.emit('start', true);
-            players[current].socket.emit('changePlayer', 1);
-            //socket.emit('start', true);
+            socket.emit('changePlayer', 1);
+            
+            //players[current].socket.emit('changePlayer', 1);
         }
 
         socket.on('move', (data) => {
             for (let i = 0; i < players.length; i++) {
-                if (players[i].player != data.player) {
-                    socket.to(players[i].socket.id).emit('rivalMove', data);
+                if (players[i].player !== data.player) {
+                    players[i].socket.emit('rivalMove', data)
                 }
             }
         })
