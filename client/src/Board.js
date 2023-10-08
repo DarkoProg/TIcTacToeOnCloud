@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './styles/TicTacToe.css';
 import O from './assets/O.png'
 import X from './assets/X.png'
@@ -17,37 +17,49 @@ function Field({ value, onFieldClick }) {
 export default function Board() {
     const sign = [X, O];
     const [player, setPlayer] = useState(0);
+    const [currentPlayer, setCurrentPlayer] = useState(0);
     const [board, setBoard] = useState(Array(9).fill(null));
     const [text, setText] = useState("current player:");
     const [myTurn, setMyTurn] = useState(false);
     
     const handleClick = (fieldNum) => {
         var changeField = board.slice();
-        if ((board[fieldNum] || checkWin()) && !myTurn) {
+        if (board[fieldNum] || checkWin()) {
             return;
         }
-        changeField[fieldNum] = sign[player];
-        setBoard(changeField);
-        socket.emit("move", {move: fieldNum, player: player});
-        setMyTurn(false);
+        socket.emit('move', {move: fieldNum, player: sign[player]});
+        
         
     }
 
     useEffect(() => {
         socket.on('changePlayer', (data) => {
-            setPlayer(data);
-            console.log("after change: ", player)
-            setMyTurn(true);
+            setPlayer(1);
+            setMyTurn(1);
+
+            console.log(player);
+
+        });
+
+        socket.on('boardUpdate', (data) => 
+        {
+            //console.log(data);
+            setBoard(data);
+            //console.log("bruh: ", myTurn);
+             if(myTurn === "true") {setMyTurn("false")}
+            else {setMyTurn("true")} 
+            setCurrentPlayer(currentPlayer);
+            setMyTurn(1);
+            //myTurn ? setMyTurn(true) : setMyTurn(false);
+            //console.log(myTurn);
+        });
+
+        socket.on('currentPlayer', (data) => {
+            setCurrentPlayer(data);
+            setMyTurn(1);
         })
-    
-        socket.on('rivalMove', (data) => {
-            var changeField = board.slice();
-            changeField[data.move] = sign[data.player];
-            setBoard(changeField);
-            setMyTurn(true);
-            console.log(board);
-        })
-    }, [])
+
+    }, [player, currentPlayer, board, myTurn, socket])
 
 
     function checkWin() {
@@ -79,7 +91,7 @@ export default function Board() {
     useEffect(() => {
         if(checkWin()) {
             setText("winner: ");
-            setPlayer((player + 1) % 2);
+            setCurrentPlayer((player + 1) % 2);
         }
         else {
             setText("current player: ");
@@ -89,9 +101,9 @@ export default function Board() {
     return (
         
         <div className="board">
-            <p>its { myTurn ? " your " : "not your" } turn</p>
+            <p>you are: </p><img className="player" src={sign[player]}/>
             <div className="playerBox">
-            <p>{text}</p> <img className="player" src={sign[player]}/>  <button onClick={reset}>reset</button><br/><br/>
+            <p>{text}</p> <img className="player" src={sign[currentPlayer]}/>  <button onClick={reset}>reset</button><br/><br/>
             </div>
             <div className="column">
                 <Field value={board[0]} onFieldClick={() => handleClick(0)} />

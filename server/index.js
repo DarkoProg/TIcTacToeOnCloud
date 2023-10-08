@@ -69,29 +69,43 @@ app.get('/cors', (req, res) => {
 })
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    players.push({ socket: socket, player: players.length, myTurn: false });
 
-    //if (socket !== players[players.length - 1].socket) {
-        players.push({ socket: socket, player: players.length });
+    if (players.length === 2) {
+        console.log(socket)
+        gameStart = true;
+        current = Math.floor(Math.random() * 2);
+        players[current].myTurn = true
+        console.log(players);
 
-        if (players.length === 2) {
-            console.log(players)
-            gameStart = true;
-            current = Math.floor(Math.random() * 2);
-            io.sockets.emit('start', true);
-            socket.emit('changePlayer', 1);
-            
-            //players[current].socket.emit('changePlayer', 1);
+        io.sockets.emit('start', true);
+
+        setTimeout(() => {
+        io.to(players[current].socket.id).emit('changePlayer');
+        }, 1000);
+        setTimeout(() => {
+            io.sockets.emit('currentPlayer', players[current].player);
+        }, 1000);
+        //io.sockets.emit('currentPlayer', current)
+        //console.log(players[current].socket.id);
+
+    }
+
+    socket.on('move', (data) => {
+        for (var i = 0; i < players.length; i++) {
+            if (socket === players[i].socket && players[i].myTurn) {
+                board[data.move] = data.player;
+                players[i].myTurn = false;
+                io.sockets.emit('boardUpdate', board);
+                io.sockets.emit('currentPlayer', i % 2);
+            }
+            else if (players[i].socket !== socket && !players[i].myTurn) {
+                players[i].myTurn = true;
+            }
         }
 
-        socket.on('move', (data) => {
-            for (let i = 0; i < players.length; i++) {
-                if (players[i].player !== data.player) {
-                    players[i].socket.emit('rivalMove', data)
-                }
-            }
-        })
-   // }
+        //io.emit('updateTurn')
+    })
 });
 
 server.listen(5000, () => {
