@@ -3,43 +3,46 @@ import { collection, addDoc } from 'firebase/firestore';
 import { useState } from 'react';
 import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import Cookies from 'universal-cookie';
+import { useHistory } from "react-router-dom";
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const cookies = new Cookies()
+    const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         createUserWithEmailAndPassword(auth, email, password)
-        .then((credential) => {
-            const addDataInfo = addDoc(collection(db, 'userStats'), {
-                userID: credential.user.uid,
-                wins: 0,
-            })
-            .then((info) => 
-            {
-                console.log("added entry to database: ", info);
+            .then((credential) => {
+                const addDataInfo = addDoc(collection(db, 'userStats'), {
+                    userID: credential.user.uid,
+                    wins: 0,
+                })
+                    .then((info) => {
+                        console.log("added entry to database: ", info);
+                    })
+                    .catch((err) => {
+                        console.log("error when trying to add entry: ", err);
+                    })
+                    history.push("/join");
             })
             .catch((err) => {
-                console.log("error when trying to add entry: ", err);
+                console.log(err.message)
             })
-
-        })
-        .catch((err) => {
-            console.log(err.message)
-        })
     }
 
 
-    return ( 
-        <form onSubmit={handleSubmit} className="Register">
-            <label>email</label><input type="text" value={email} onChange={(e) => setEmail(e.target.value)} /><br/>
-            <label>password</label><input type="password" value={password} onChange={(e) => setPassword(e.target.value)} /><br/>
-            <input type='submit' value="register" />
-        </form>
-     );
+    return (
+        <div className='register'>
+            <form onSubmit={handleSubmit}>
+                <h1>REGISTER</h1>
+                <input className='textinput' type="text" value={email} placeholder='Email' onChange={(e) => setEmail(e.target.value)} /><br />
+                <input className='textinput' type="password" value={password} placeholder='Password' onChange={(e) => setPassword(e.target.value)} /><br />
+                <input className='submitinput' type='submit' value="register" />
+            </form>
+        </div>
+    );
 }
- 
+
 export default Register;

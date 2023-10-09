@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { auth } from "./Firebase";
-import socketIOClient from "socket.io-client";
 import Board from "./Board";
 import { socket } from "./Socket";
 
@@ -8,8 +6,10 @@ const JoinGame = () => {
     //const [rival, setRival] = useState("");
     //const [channel, setChannel] = useState(null);
     const [game, setGame] = useState(false);
+    const [connecting, setConnecting] = useState(false);
 
     const createChannel = async () => {
+        setConnecting(true)
         socket.connect();
     }
 
@@ -22,10 +22,10 @@ const JoinGame = () => {
     }, [])
 
     return ( 
-        <div className="JoinGame">
+        <div className="joinGame">
             {
-                !game ? (
-                <button className="join" onClick={createChannel}>Connect</button>
+                !game ? ( !connecting ? (<button className="join" onClick={createChannel}>Connect</button>) : (<h1>CONNECTING</h1>)
+                
                 ) : (
                  <Board/>
                  )

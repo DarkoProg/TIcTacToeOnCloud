@@ -5,7 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useState } from 'react';
 
 import './styles/App.css';
-import TicTacToe from './TicTacToe';
+import './styles/TicTacToe.css'
 import Home from './Home'
 import Navbar from './Navbar';
 import Login from './Login'
@@ -20,15 +20,11 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Hello there</h1>
         <Navbar />
         <div className="content">
           <Switch>
             <Route exact path="/">
               <Home />
-            </Route>
-            <Route exact path="/tictactoe">
-              <TicTacToe />
             </Route>
             <Route exact path="/register">
               <Register />
@@ -37,12 +33,6 @@ function App() {
               <Login cookies={cookies}/>
             </Route>
             <Route exact path="/join">
-{/*               {isAuth ?
-                (<div className="game">
-                    <JoinGame />
-                </div>) : (
-                <h1>Waiting</h1>
-                )} */}
                 <JoinGame />
             </Route>
           </Switch>
