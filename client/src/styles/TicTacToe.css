@@ -6,36 +6,94 @@
     flex-wrap: wrap;
 }
 
-.column {
+/* .column {
     background-color: black;
     margin-left: 25%;
     margin-right: 26%;
     display: flex;
+}
+ */
 
+.game {
+    margin-top: 10px;
+}
 
+.board {
+    display: grid;
+    width: 450px;
+    height: 450px;
+    grid-template-columns: auto auto auto;
+    padding-left: 30.8%;
+    float: left;
+}
+
+p {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.am {
     
+    width: 500px;
+    height: 100px;
+    padding-left: 27%;
+}
+
+.am p {
+    margin-top: 50px;
+    width: 300px;
+    text-align: center;
+}
+
+.am img {
+    float: right;
+    margin: -45px;
+    padding-left: 30px;
+    min-height: 150px;
+    vertical-align: baseline;
 }
 
 .field {
-    padding: 100px;
-    margin: 5px;
-    width: 300px;
-    height: 300px;
-    justify-content: center;
+    display: flex;
+    width: 150px;
+    height: 150px;
     align-items: center;
-    background-color: white;
-    border: none;
-    display: inline-flex;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    border: 3px solid black;
+    transition: background 0.2s ease-in-out;
 }
 
+
+
 .field img {
-    max-height: 300px;
-    max-width: 300px;
-
-
+    max-height: 140px;
+    max-width: 140px;
 }
 
 
 .player {
     max-height: 40px;
+}
+
+.playerBox {
+    display: inline-block;
+    float: right;
+    padding-right: 90px;
+}
+
+.playerBox img {
+    min-height: 150px;
+}
+
+.leave {
+    padding-top: 10px;
+    margin-top: 30px;
+    margin-right: 10px;
+    background-color: black;
+    width: 150px;
+    height: 60px;
+    color: white;
+
 }

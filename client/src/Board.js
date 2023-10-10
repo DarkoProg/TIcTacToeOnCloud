@@ -21,15 +21,15 @@ export default function Board() {
     const [board, setBoard] = useState(Array(9).fill(null));
     const [text, setText] = useState("current player:");
     const [myTurn, setMyTurn] = useState(false);
-    
+
     const handleClick = (fieldNum) => {
         var changeField = board.slice();
         if (board[fieldNum] || checkWin()) {
             return;
         }
-        socket.emit('move', {move: fieldNum, player: sign[player]});
-        
-        
+        socket.emit('move', { move: fieldNum, player: sign[player] });
+
+
     }
 
     useEffect(() => {
@@ -41,13 +41,12 @@ export default function Board() {
 
         });
 
-        socket.on('boardUpdate', (data) => 
-        {
+        socket.on('boardUpdate', (data) => {
             //console.log(data);
             setBoard(data);
             //console.log("bruh: ", myTurn);
-             if(myTurn === "true") {setMyTurn("false")}
-            else {setMyTurn("true")} 
+            if (myTurn === "true") { setMyTurn("false") }
+            else { setMyTurn("true") }
             setCurrentPlayer(currentPlayer);
             setMyTurn(1);
             //myTurn ? setMyTurn(true) : setMyTurn(false);
@@ -89,37 +88,40 @@ export default function Board() {
     }
 
     useEffect(() => {
-        if(checkWin()) {
+        if (checkWin()) {
             setText("winner: ");
             setCurrentPlayer((player + 1) % 2);
         }
         else {
             setText("current player: ");
         }
-    },[board])
+    }, [board])
 
     return (
-        
-        <div className="board">
-            <p>you are: </p><img className="player" src={sign[player]}/>
-            <div className="playerBox">
-            <p>{text}</p> <img className="player" src={sign[currentPlayer]}/>  <button onClick={reset}>reset</button><br/><br/>
+
+        <div className="game">
+            <div className="am">
+                <p>you are: <img className="player" src={sign[player]} /></p>
             </div>
-            <div className="column">
-                <Field value={board[0]} onFieldClick={() => handleClick(0)} />
-                <Field value={board[1]} onFieldClick={() => handleClick(1)} />
-                <Field value={board[2]} onFieldClick={() => handleClick(2)} />
+            <br />
+            <div className="playArea">
+                <div className="board">
+                    <Field value={board[0]} onFieldClick={() => handleClick(0)} />
+                    <Field value={board[1]} onFieldClick={() => handleClick(1)} />
+                    <Field value={board[2]} onFieldClick={() => handleClick(2)} />
+                    <Field value={board[3]} onFieldClick={() => handleClick(3)} />
+                    <Field value={board[4]} onFieldClick={() => handleClick(4)} />
+                    <Field value={board[5]} onFieldClick={() => handleClick(5)} />
+                    <Field value={board[6]} onFieldClick={() => handleClick(6)} />
+                    <Field value={board[7]} onFieldClick={() => handleClick(7)} />
+                    <Field value={board[8]} onFieldClick={() => handleClick(8)} />
+                </div>
+                <div className="playerBox">
+                    <p>{text}</p> <img className="player" src={sign[currentPlayer]} />
+                </div>
             </div>
-            <div className="column">
-                <Field value={board[3]} onFieldClick={() => handleClick(3)} />
-                <Field value={board[4]} onFieldClick={() => handleClick(4)} />
-                <Field value={board[5]} onFieldClick={() => handleClick(5)} />
-            </div>
-            <div className="column">
-                <Field value={board[6]} onFieldClick={() => handleClick(6)} />
-                <Field value={board[7]} onFieldClick={() => handleClick(7)} />
-                <Field value={board[8]} onFieldClick={() => handleClick(8)} />
-            </div>
+
+            <button className="leave" onClick={reset}>leave lobby</button>
         </div>
     )
 }
