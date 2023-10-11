@@ -21,10 +21,10 @@ const io = new Server(server, {
     
 });
 
-/* app.get('/cors', (req, res) => {
+app.get('/cors', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     res.send({ "msg": "This has CORS enabled 🎈" })
-}) */
+})
 
 io.set('transports', [ 'websocket' ]);
 
