@@ -21,6 +21,8 @@ app.get('/cors', (req, res) => {
     res.send({ "msg": "This has CORS enabled 🎈" })
 })
 
+io.set('transports', [ 'websocket' ]);
+
 io.on('connection', (socket) => {
     players.push({ socket: socket, player: players.length, myTurn: false });
 
