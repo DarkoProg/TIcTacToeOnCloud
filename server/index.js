@@ -13,13 +13,17 @@ const server = createServer(app);
 const PORT=process.env.PORT || 8080;
 
 const io = new Server(server, {
-    origins:["https://tictactoeoncloud-o5ucqy4g4q-ew.a.run.app/"]
+    cors: {
+        origin: ["https://tictactoeoncloud-o5ucqy4g4q-ew.a.run.app/"],
+        methods: ["GET", "POST"]
+    }
+    
 });
 
-app.get('/cors', (req, res) => {
+/* app.get('/cors', (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     res.send({ "msg": "This has CORS enabled 🎈" })
-})
+}) */
 
 io.set('transports', [ 'websocket' ]);
 
