@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useCallback } from 'react';
+import { useHistory } from "react-router-dom";
 import './styles/TicTacToe.css';
 import O from './assets/O.png'
 import X from './assets/X.png'
@@ -15,6 +16,7 @@ function Field({ value, onFieldClick }) {
 }
 
 export default function Board() {
+    const history = useHistory();
     const sign = [X, O];
     const [player, setPlayer] = useState(0);
     const [currentPlayer, setCurrentPlayer] = useState(0);
@@ -58,6 +60,11 @@ export default function Board() {
             setMyTurn(1);
         })
 
+        socket.on('disconnect', () => {
+            console.log('kekw');
+            history.go("/join");
+        })
+
     }, [player, currentPlayer, board, myTurn, socket])
 
 
@@ -85,6 +92,7 @@ export default function Board() {
     const reset = () => {
         setBoard(Array(9).fill(null))
         setPlayer(0);
+        history.go("/join");
     }
 
     useEffect(() => {

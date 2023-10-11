@@ -1,53 +1,6 @@
-/* import express from 'express';
-import cors from 'cors'
-import { Server } from 'socket.io';
-
-
-const app=express();
-//app.use(cors({ credentials: true}));
-
-const PORT=process.env.PORT || 5000;
-
-let players = [];
-let gameStart = false;
-
-
-const server = app.listen(PORT, ()=>{
-    console.log(`Server is running on ${PORT}` )
-})
-
-const socketIo = new Server(server, {
-    cors: {
-        origin: "http://localhost:5000"
-    }});
-
-socketIo.on('connection', (socket) => {
-    console.log("use connected")
-
-    players.push({socket: socket, player: players.length});
-
-    if( players. length == 2) {
-        gameStart = true;
-        var changePlayer = Math.random() * 2;
-        socket.to(players[players.length - 1].socket.id).emit('changePlayer', 1)
-        socket.emit('start', true);
-    }
-
-    socket.on('disconnect', () => {
-
-    })
-
-    socket.compress('move', (data) => {
-        for(let i = 0; i < players.length; i++) {
-            if(players[i].player != data.player) {
-                socket.to(players[i].socket.id).emit('rivalMove', data);
-            }
-        }
-    })
-}) */
 const express = require('express');
 const { createServer } = require('node:http');
-const { join } = require('node:path');
+const { disconnect } = require('node:process');
 const { Server } = require('socket.io');
 
 
@@ -74,11 +27,11 @@ io.on('connection', (socket) => {
     players.push({ socket: socket, player: players.length, myTurn: false });
 
     if (players.length === 2) {
-        console.log(socket)
+        //console.log(socket)
         gameStart = true;
         current = Math.floor(Math.random() * 2);
         players[current].myTurn = true
-        console.log(players);
+        //console.log(players);
 
         io.sockets.emit('start', true);
 
@@ -88,9 +41,6 @@ io.on('connection', (socket) => {
         setTimeout(() => {
             io.sockets.emit('currentPlayer', players[current].player);
         }, 1000);
-        //io.sockets.emit('currentPlayer', current)
-        //console.log(players[current].socket.id);
-
     }
 
     socket.on('move', (data) => {
@@ -99,14 +49,24 @@ io.on('connection', (socket) => {
                 board[data.move] = data.player;
                 players[i].myTurn = false;
                 io.sockets.emit('boardUpdate', board);
-                io.sockets.emit('currentPlayer', i % 2);
+                io.sockets.emit('currentPlayer', i);
             }
             else if (players[i].socket !== socket && !players[i].myTurn) {
                 players[i].myTurn = true;
             }
         }
+    })
 
-        //io.emit('updateTurn')
+    socket.on('disconnect', (socket) => {
+        var playerLength = players.length
+        for(var i = playerLength -1 ; i >= 0; i--) {
+            var deletedPlayer = players.pop();
+            if(deletedPlayer.socket !== socket)
+            {
+                deletedPlayer.socket.disconnect();
+            }
+        }
+        board = Array(9).fill(null);
     })
 });
 
