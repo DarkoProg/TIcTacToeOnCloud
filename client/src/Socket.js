@@ -5,5 +5,4 @@ const URL = process.env.NODE_ENV === 'production' ? undefined : 'https://tictact
 
 export const socket = io(URL, {
     autoConnect: false,
-    withCredentials: true,
 });
