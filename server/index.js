@@ -13,9 +13,7 @@ const server = createServer(app);
 const PORT=process.env.PORT || 8080;
 
 const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:8080"
-    }
+    origins:["https://tictactoeoncloud-o5ucqy4g4q-ew.a.run.app/"]
 });
 
 app.get('/cors', (req, res) => {
