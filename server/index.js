@@ -16,6 +16,7 @@ const io = new Server(server, {
     cors: {
         origin: ["https://tictactoeoncloud-o5ucqy4g4q-ew.a.run.app/"],
         methods: ["GET", "POST"],
+        transports: ["websocket"] 
     }
     
 });
@@ -25,7 +26,7 @@ app.get('/cors', (req, res) => {
     res.send({ "msg": "This has CORS enabled 🎈" })
 })
 
-io.set('transports', [ 'websocket' ]);
+//io.set('transports', [ 'websocket' ]);
 
 io.on('connection', (socket) => {
     players.push({ socket: socket, player: players.length, myTurn: false });
